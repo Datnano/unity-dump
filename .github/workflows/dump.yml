@@ -1,1 +1,44 @@
+name: Dump IL2CPP
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Tải file game từ Release v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download v1 --repo ${{ github.repository }} -p "libil2cpp.so" -p "global-metadata.dat"
+
+      - name: Tải và chạy Cpp2IL (Unity 6000.6.9)
+        run: |
+          git clone --depth 1 https://github.com/SamboyCoding/Cpp2IL.git
+          dotnet run --project Cpp2IL/Cpp2IL/Cpp2IL.csproj -c Release -- \
+            --game-path libil2cpp.so \
+            --metadata-path global-metadata.dat \
+            --unity-version 6000.6.9 \
+            --output-as dummydll \
+            --output-to out
+
+      - name: Xuất file dump.cs bằng ilspycmd
+        run: |
+          dotnet tool install -g ilspycmd
+          ~/.dotnet/tools/ilspycmd out/Assembly-CSharp.dll > dump.cs
+
+      - name: Lưu file dump.cs để tải về
+        uses: actions/upload-artifact@v4
+        with:
+          name: dump-cs
+          path: dump.cs
 
