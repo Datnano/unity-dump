@@ -13,13 +13,17 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
 
       - name: Download release v1 files
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release download v1 --repo ${{ github.repository }} -p "libil2cpp.so" -p "global-metadata.dat"
+          ls -lh libil2cpp.so global-metadata.dat
 
       - name: Run Cpp2IL
         run: |
@@ -35,6 +39,7 @@ jobs:
         run: |
           dotnet tool install -g ilspycmd
           ~/.dotnet/tools/ilspycmd out/Assembly-CSharp.dll > dump.cs
+          ls -lh dump.cs
 
       - name: Upload dump.cs artifact
         uses: actions/upload-artifact@v4
