@@ -28,7 +28,7 @@ jobs:
       - name: Run Cpp2IL
         run: |
           git clone --depth 1 https://github.com/SamboyCoding/Cpp2IL.git
-          dotnet run --project Cpp2IL/Cpp2IL/Cpp2IL.csproj -c Release -- \
+          dotnet run --project Cpp2IL/Cpp2IL/Cpp2IL.csproj --framework net10.0 -c Release -- \
             --game-path libil2cpp.so \
             --metadata-path global-metadata.dat \
             --unity-version 6000.6.9 \
