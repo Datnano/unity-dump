@@ -23,15 +23,15 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release download v1 --repo ${{ github.repository }} -p "libil2cpp.so" -p "global-metadata.dat"
-          ls -lh libil2cpp.so global-metadata.dat
 
-      - name: Run Cpp2IL
+      - name: Run Cpp2IL with Offsets
         run: |
           git clone --depth 1 https://github.com/SamboyCoding/Cpp2IL.git
           dotnet run --project Cpp2IL/Cpp2IL/Cpp2IL.csproj --framework net10.0 -c Release -- \
             --force-binary-path libil2cpp.so \
             --force-metadata-path global-metadata.dat \
             --force-unity-version 6000.6.9 \
+            --use-processor attributeinjector \
             --output-as dummydll \
             --output-to out
 
@@ -44,5 +44,5 @@ jobs:
       - name: Upload dump.cs artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dump-cs
+          name: dump-cs-offsets
           path: dump.cs
