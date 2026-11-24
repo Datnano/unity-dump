@@ -29,9 +29,9 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/SamboyCoding/Cpp2IL.git
           dotnet run --project Cpp2IL/Cpp2IL/Cpp2IL.csproj --framework net10.0 -c Release -- \
-            --game-path libil2cpp.so \
-            --metadata-path global-metadata.dat \
-            --unity-version 6000.6.9 \
+            --force-binary-path libil2cpp.so \
+            --force-metadata-path global-metadata.dat \
+            --force-unity-version 6000.6.9 \
             --output-as dummydll \
             --output-to out
 
